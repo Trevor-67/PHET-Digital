@@ -1,0 +1,2 @@
+<img class="service-image{% if service.id == 'flyer-design' %} service-image--flyer{% endif %}" src="{{ url_for('static', filename='images/' ~ (image_file|default(service.image))) }}"
+     alt="{{ image_alt|default(service.alt) }}" width="600" height="400" loading="lazy" decoding="async">

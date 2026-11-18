@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Feedback{% endblock %}
+{% block content %}
+<section class="section wrap">
+  {% if submitted %}
+    <h1>Thanks for your feedback</h1>
+    <p>Phetego will review it before it appears on the website.</p>
+  {% elif unavailable %}
+    <h1>Feedback link unavailable</h1>
+    <p>Ask Phetego on <a href="{{ whatsapp }}">WhatsApp</a> for a new link.</p>
+  {% elif retry %}
+    <h1>Feedback is temporarily unavailable</h1>
+    <p>Try again in a moment, or contact Phetego on <a href="{{ whatsapp }}">WhatsApp</a>.</p>
+  {% else %}
+    <h1>Share your feedback</h1>
+    <p class="intro">Tell us what went well or what we could improve. Your feedback may appear in Testimonials after Phetego reviews it.</p>
+    <form class="card order-form" method="post">
+      {% if error %}<p class="error" role="alert">{{ error }}</p>{% endif %}
+      <label for="display-name">Public display name <span class="muted">(optional)</span></label>
+      <input id="display-name" name="display_name" maxlength="40" value="{{ name|default('') }}" aria-describedby="display-name-help">
+      <p class="muted" id="display-name-help">Leave blank to appear as Anonymous.</p>
+      <label for="quote">Your feedback</label>
+      <textarea id="quote" name="quote" rows="4" maxlength="500" required aria-describedby="quote-help">{{ quote|default('') }}</textarea>
+      <p class="muted" id="quote-help">Up to 500 characters. Leave out phone numbers, email addresses and private CV details.</p>
+      <label class="consent" for="consent">
+        <input id="consent" name="consent" value="yes" type="checkbox" required{% if consent %} checked{% endif %}>
+        <span>I give permission to publish this feedback with the display name shown above or as Anonymous.</span>
+      </label>
+      <button type="submit" class="button">Send feedback</button>
+    </form>
+  {% endif %}
+</section>
+{% endblock %}

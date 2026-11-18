@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero"><div class="wrap hero-grid">
+  <div>
+    <p class="eyebrow">Based in Cape Town</p>
+    <h1>Get a CV you can send.<br>Get a website customers can find.</h1>
+    <p class="intro">CV revamps for job seekers, plus flyers, websites and maintenance for small businesses. Pick a package, see the price upfront and chat with me on WhatsApp.</p>
+    <div class="actions"><a class="button" href="#services">Find a service</a><a class="button outline" href="{{ whatsapp }}">Ask on WhatsApp</a></div>
+  </div>
+  <aside class="hero-card" aria-label="Starting prices">
+    <p class="eyebrow">What do you need?</p>
+    <ul class="quick-links">
+      {% for service in services %}
+      <li><a href="{{ url_for('services') }}#{{ service.id }}"><span>{{ service.name }}</span><strong>From {{ packages[service.id][2]|rand }}{% if service.id in cv_regular_prices %} on promo{% endif %}</strong></a></li>
+      {% endfor %}
+    </ul>
+  </aside>
+</div></section>
+<section class="section wrap" id="services">
+  <h2>Find the right service</h2>
+  <div class="grid three">
+  {% for service in services %}
+    <article class="service-card">
+      {% with image_file=service.home_image|default(service.image), image_alt=service.home_alt|default(service.alt) %}
+        {% include "service_image.html" %}
+      {% endwith %}
+      <div class="service-content">
+        <h3>{{ service.name }}</h3>
+        {% if service.id in cv_regular_prices %}<p class="promo-label">50% off CV packages</p>{% endif %}
+        <p>{{ service.summary }}</p>
+        <p class="service-meta"><strong>From {{ packages[service.id][2]|rand }}</strong><span>{{ service.delivery }}</span></p>
+        <a class="button secondary" href="{{ url_for('services') }}#{{ service.id }}">See {{ service.name }} packages</a>
+      </div>
+    </article>
+  {% endfor %}
+  </div>
+</section>
+<section class="section tint"><div class="wrap">
+  <h2>How it works</h2>
+  <ol class="steps grid three">
+    <li><strong>Choose your package</strong><p>Submit the order form and send the prefilled WhatsApp message.</p></li>
+    <li><strong>Confirm and pay 50%</strong><p>We’ll confirm what you need. Pay the deposit via PayShap, SnapScan or bank transfer.</p></li>
+    <li><strong>Get your delivery</strong><p>CVs are delivered in 48 hours and business websites in 3–5 days. Pay the balance on delivery.</p></li>
+  </ol>
+</div></section>
+<section class="section wrap">
+  <h2>Portfolio</h2>
+  <div class="grid two">{% for name, tools, description in projects[:2] %}<article class="card"><p class="eyebrow">{{ tools }}</p><h3>{{ name }}</h3><p>{{ description }}</p></article>{% endfor %}</div>
+  <div class="actions"><a class="button secondary" href="{{ url_for('portfolio') }}">View all projects</a><a class="button outline" href="{{ portfolio_url }}">Visit my personal portfolio</a></div>
+</section>
+<section class="section tint"><div class="wrap">
+  <h2>Testimonials</h2>
+  {% if testimonials %}
+    <div class="grid two">
+      {% for testimonial in testimonials %}
+      <figure class="card testimonial">
+        <blockquote>{{ testimonial.quote }}</blockquote>
+        <figcaption>{{ testimonial.display_name }}</figcaption>
+      </figure>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p>Customer testimonials will appear here once available.</p>
+  {% endif %}
+</div></section>
+<section class="section wrap">
+  <h2>Frequently asked questions</h2>
+  <details><summary>When does work start?</summary><p>Once we have agreed on the scope, received your materials and confirmed your 50% deposit.</p></details>
+  <details><summary>How do I pay?</summary><p>Pay 50% via PayShap, SnapScan or bank transfer and the remaining 50% on delivery. We’ll share payment details on WhatsApp.</p></details>
+  <details><summary>How long does delivery take?</summary><p>CVs take 48 hours and business websites take 3–5 days. Confirm your catalogue timeline on WhatsApp.</p></details>
+</section>
+{% endblock %}

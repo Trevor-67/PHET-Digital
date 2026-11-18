@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Review testimonials{% endblock %}
+{% block content %}
+<section class="section wrap">
+  <p><a href="{{ url_for('admin.orders') }}">Back to orders</a></p>
+  <h1>Review testimonials</h1>
+  {% if reviews %}
+    <div class="grid two">
+      {% for review in reviews %}
+        <article class="card admin-order">
+          <h2>{{ review.display_name }}</h2>
+          {% if review.order_id %}<p class="muted">Order #{{ review.order_id }}</p>{% endif %}
+          <blockquote class="admin-notes">{{ review.quote }}</blockquote>
+          <form class="actions" method="post">
+            <input type="hidden" name="csrf" value="{{ csrf }}">
+            <button class="button" type="submit" formaction="{{ url_for('admin.moderate_feedback', feedback_id=review.id, decision='approve') }}">Approve</button>
+            <button class="button outline" type="submit" formaction="{{ url_for('admin.moderate_feedback', feedback_id=review.id, decision='reject') }}">Reject</button>
+          </form>
+        </article>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p>No testimonials waiting for review.</p>
+  {% endif %}
+</section>
+{% endblock %}

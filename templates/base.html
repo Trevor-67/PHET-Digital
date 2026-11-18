@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en-ZA">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="CV revamps, business websites and WhatsApp catalogues from Phetego Tjie in Cape Town.">
+  <title>{% block title %}Home{% endblock %} | PHET-Digital</title>
+  <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script src="{{ url_for('static', filename='order.js') }}" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="header">
+    <div class="wrap header-inner">
+      <a class="brand" href="{{ url_for('home') }}"><img src="{{ url_for('static', filename='favicon.ico') }}" width="40" height="40" alt=""><span>PHET-Digital</span></a>
+      <nav aria-label="Main navigation">
+        {% for endpoint, label in [('home','Home'), ('services','Services'), ('portfolio','Portfolio'), ('order','Order')] %}
+          <a href="{{ url_for(endpoint) }}"{% if request.endpoint == endpoint %} aria-current="page"{% endif %}>{{ label }}</a>
+        {% endfor %}
+      </nav>
+    </div>
+  </header>
+  <main id="main">{% block content %}{% endblock %}</main>
+  <footer class="footer"><div class="wrap"><strong>PHET-Digital</strong><p>Cape Town, South Africa · <a href="{{ whatsapp }}">{{ whatsapp_number }}</a> · <a href="{{ url_for('privacy') }}">Privacy Policy</a></p></div></footer>
+  <a class="whatsapp" href="{{ whatsapp }}" aria-label="Chat with Phetego on WhatsApp">WhatsApp</a>
+</body>
+</html>

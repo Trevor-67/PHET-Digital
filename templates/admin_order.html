@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Order #{{ order.id }}{% endblock %}
+{% block content %}
+<section class="section wrap">
+  <div class="admin-header">
+    <a href="{{ url_for('admin.orders') }}">Back to all orders</a>
+    <form method="post" action="{{ url_for('admin.logout') }}">
+      <input type="hidden" name="csrf" value="{{ csrf }}">
+      <button class="button outline" type="submit">Sign out</button>
+    </form>
+  </div>
+  <h1>Order #{{ order.id }}</h1>
+  <article class="card admin-order">
+    <dl>
+      <dt>Customer</dt><dd>{{ order.name }}</dd>
+      <dt>WhatsApp number</dt><dd>{{ order.phone }}</dd>
+      <dt>Package</dt><dd>{{ order.package|package_label }}</dd>
+      <dt>Order total</dt><dd>{{ order.price_rand|rand }}</dd>
+      <dt>Submitted</dt><dd>{{ order.created_at }} UTC</dd>
+    </dl>
+    <form class="admin-filters" method="post" action="{{ url_for('admin.update_order_status', order_id=order.id) }}">
+      <input type="hidden" name="csrf" value="{{ csrf }}">
+      <div><label for="order-status">Order status</label>
+        <select id="order-status" name="status">
+          {% for key, label in statuses.items() %}<option value="{{ key }}"{% if key == order.status %} selected{% endif %}>{{ label }}</option>{% endfor %}
+        </select>
+      </div>
+      <button class="button outline" type="submit">Save status</button>
+      <a class="button outline" href="{{ customer_chat }}">Message customer</a>
+    </form>
+    {% if feedback_status == 'pending' %}
+      <p><a href="{{ url_for('admin.reviews') }}">Feedback received · review testimonial</a></p>
+    {% elif feedback_status == 'approved' %}
+      <p>Feedback approved and published.</p>
+    {% else %}
+      <form class="actions" method="post" action="{{ url_for('admin.request_feedback', order_id=order.id) }}">
+        <input type="hidden" name="csrf" value="{{ csrf }}">
+        <button class="button" type="submit">{% if feedback_status == 'invited' %}Reopen feedback link{% elif feedback_status == 'rejected' %}Request new feedback{% else %}Request feedback{% endif %}</button>
+      </form>
+    {% endif %}
+    <h2>Form answers and notes</h2>
+    <p class="admin-notes">{{ order.notes or 'No additional details were entered.' }}</p>
+  </article>
+</section>
+{% endblock %}

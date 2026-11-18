@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Services{% endblock %}
+{% block content %}
+<section class="section wrap">
+  <h1>Services and pricing</h1>
+  <p class="intro">Choose a package below. Pay a 50% deposit via PayShap, SnapScan or bank transfer and the balance on delivery.</p>
+  <nav class="service-nav" aria-label="Jump to a service">
+    {% for service in services %}<a href="#{{ service.id }}">{{ service.name }}</a>{% endfor %}
+  </nav>
+  {% for service in services %}
+  <section class="service-group" id="{{ service.id }}">
+    <div class="service-group-intro">
+      <div>
+        <h2>{{ service.name }}</h2>
+        {% if service.id in cv_regular_prices %}<p class="promo-label">50% off CV packages</p>{% endif %}
+        <p>{{ service.summary }}</p>
+        <p class="muted">{{ service.delivery }}</p>
+      </div>
+      {% if service.id == "flyer-design" %}
+      <div>
+        {% include "service_image.html" %}
+        <a href="{{ url_for('static', filename='images/' ~ service.image) }}">View braid flyer sample</a>
+      </div>
+      {% else %}
+        {% include "service_image.html" %}
+      {% endif %}
+    </div>
+    {% if service.id == "flyer-design" %}
+    <div class="grid two">
+      <article class="card">
+        <h3>PHET-Digital promotional flyer</h3>
+        <img class="service-image service-image--flyer"
+             src="{{ url_for('static', filename='images/phet-digital-flyer.webp') }}"
+             alt="PHET-Digital promotional flyer for digital services" width="600" height="400" loading="lazy">
+        <a href="{{ url_for('static', filename='images/phet-digital-flyer.webp') }}">View PHET-Digital flyer</a>
+      </article>
+    </div>
+    {% endif %}
+    <div class="grid two">
+      {% for key in service.packages %}
+      {% set name, tier, price, description = packages[key] %}
+      <article class="card package"{% if key != service.id %} id="{{ key }}"{% endif %}>
+        <h3>{{ tier }}</h3>
+        {% if key in cv_regular_prices %}
+        <p class="regular-price">Regular price <s>{{ cv_regular_prices[key]|rand }}</s></p>
+        <p class="price">{{ price|rand }} <span class="promo-price">Promo price</span></p>
+        {% else %}
+        <p class="price">{{ price|rand }}</p>
+        {% endif %}
+        <p>{{ description }}</p>
+        <p class="muted">50% deposit {{ (price / 2)|rand }}</p>
+        <a class="button" href="{{ url_for('order', package=key) }}">Choose {{ tier }}<span class="sr-only"> {{ name }}</span></a>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endfor %}
+</section>
+{% endblock %}

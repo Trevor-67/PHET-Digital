@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Request feedback{% endblock %}
+{% block content %}
+<section class="section wrap">
+  <p><a href="{{ url_for('admin.order_details', order_id=order_id) }}">Back to order #{{ order_id }}</a></p>
+  <h1>Feedback link for order #{{ order_id }}</h1>
+  <div class="card order-form">
+    {% if local_link %}
+      <p>This link works on this computer. Test it here, then create a new link from the hosted site to send to your customer.</p>
+      <a class="button" href="{{ feedback_url }}">Open test feedback form</a>
+    {% else %}
+      <p>Open the draft message in WhatsApp and tap Send when you’re ready. The link accepts one submission.</p>
+      <a class="button" href="{{ whatsapp_url }}">Open WhatsApp message</a>
+    {% endif %}
+    <label for="feedback-url">Feedback link</label>
+    <input id="feedback-url" type="url" value="{{ feedback_url }}" readonly>
+  </div>
+</section>
+{% endblock %}

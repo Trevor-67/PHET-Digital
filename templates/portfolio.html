@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Portfolio{% endblock %}
+{% block content %}
+<section class="section wrap">
+  <div class="portfolio-intro grid two">
+    <div>
+      <h1>Portfolio</h1>
+      <p class="intro">I’m Phetego Tjie, a junior software developer in Cape Town and an ICT Applications Development graduate from Walter Sisulu University. At Lesaka Technologies, I work on AI agents.</p>
+    </div>
+    <img class="service-image" src="{{ url_for('static', filename='images/database-workstation.webp') }}"
+         alt="A developer working at a laptop in a cream and plum workspace" width="900" height="600">
+  </div>
+  <div class="grid two">
+    {% for name, tools, description in projects %}
+      <article class="card"><p class="eyebrow">{{ tools }}</p><h2>{{ name }}</h2><p>{{ description }}</p></article>
+    {% endfor %}
+  </div>
+  <div class="actions"><a class="button secondary" href="{{ portfolio_url }}">Visit my personal portfolio</a></div>
+</section>
+{% endblock %}

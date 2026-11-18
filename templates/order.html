@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Order{% endblock %}
+{% block content %}
+{% set errors = errors|default({}) %}
+<section class="section wrap">
+  <h1>Place an order</h1>
+  <p class="intro">Choose a package and leave your contact details. After saving your order, we’ll open WhatsApp so you can send your order reference.</p>
+  <p>Pay by PayShap, SnapScan or bank transfer. PHET-Digital will share payment details on WhatsApp.</p>
+  <form class="card order-form" method="post" action="{{ url_for('order') }}">
+    {% if problem %}<p class="error" role="alert">{{ problem }}</p>{% endif %}
+    {% if errors %}<p class="error" role="alert">Check the highlighted fields and try again.</p>{% endif %}
+    <label for="package">Package</label>
+    <select id="package" name="package" required {% if errors.package %}aria-invalid="true" aria-describedby="package-error"{% endif %}>
+      <option value="">Select a package</option>
+      {% for key, (service, tier, price, description) in packages.items() %}
+        <option value="{{ key }}" data-total="{{ price|rand }}" data-deposit="{{ (price / 2)|rand }}" data-intake="{{ package_intake[key] }}" {% if values.get('package') == key %}selected{% endif %}>{{ service }} · {{ tier }} · {{ price|rand }}{% if key in cv_regular_prices %} promo{% endif %}</option>
+      {% endfor %}
+    </select>
+    {% if errors.package %}<p class="error" id="package-error">{{ errors.package }}</p>{% endif %}
+    {% set selected_package = packages.get(values.get('package')) %}
+    <p class="muted" id="deposit" aria-live="polite">{% if selected_package %}Total: {{ selected_package[2]|rand }} · 50% deposit: {{ (selected_package[2] / 2)|rand }} · Balance on delivery: {{ (selected_package[2] / 2)|rand }}{% endif %}</p>
+    <label for="name">Full name</label>
+    <input id="name" name="name" autocomplete="name" maxlength="80" required value="{{ values.get('name', '') }}" {% if errors.name %}aria-invalid="true" aria-describedby="name-error"{% endif %}>
+    {% if errors.name %}<p class="error" id="name-error">{{ errors.name }}</p>{% endif %}
+    <label for="phone">WhatsApp number</label>
+    <input id="phone" name="phone" type="tel" autocomplete="tel" maxlength="30" required placeholder="082 123 4567" value="{{ values.get('phone', '') }}" {% if errors.phone %}aria-invalid="true" aria-describedby="phone-error"{% endif %}>
+    {% if errors.phone %}<p class="error" id="phone-error">{{ errors.phone }}</p>{% endif %}
+    {% if errors.intake %}<p class="error" role="alert">{{ errors.intake }}</p>{% endif %}
+    {% for group, fields in intake.items() %}
+      <fieldset class="intake-fields" data-intake-group="{{ group }}"{% if package_intake.get(values.get('package')) != group %} hidden disabled{% endif %}>
+        <legend>Tell us what you need <span class="muted">(optional)</span></legend>
+        {% for key, label, hint in fields %}
+          <label for="{{ key }}">{{ label }}</label>
+          <input id="{{ key }}" name="{{ key }}" maxlength="200" value="{{ values.get(key, '') }}" placeholder="{{ hint }}">
+        {% endfor %}
+      </fieldset>
+    {% endfor %}
+    <noscript><p>Use the notes box to share your requirements if the questions for your package are hidden.</p></noscript>
+    <label for="notes">What do you need? <span class="muted">(optional)</span></label>
+    <textarea id="notes" name="notes" rows="4" maxlength="500" {% if errors.notes %}aria-invalid="true" aria-describedby="notes-error"{% endif %}>{{ values.get('notes', '') }}</textarea>
+    {% if errors.notes %}<p class="error" id="notes-error">{{ errors.notes }}</p>{% endif %}
+    <p class="muted">Your details are saved so Phetego can follow up on your order. Share documents directly on WhatsApp. Keep passwords and database credentials out of this form.</p>
+    <button class="button" type="submit">Save order and open WhatsApp</button>
+  </form>
+</section>
+{% endblock %}
